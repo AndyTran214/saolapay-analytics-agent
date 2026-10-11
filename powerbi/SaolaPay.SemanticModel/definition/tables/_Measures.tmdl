@@ -1,0 +1,219 @@
+table _Measures
+
+	/// Sum of amount in VND over spending transactions (merchant_payment, bill_payment, mobile_topup)
+	measure gmv =
+			CALCULATE(
+				SUM(fct_transactions[amount_vnd]),
+				fct_transactions[is_valid] = TRUE(),
+				fct_transactions[is_spending] = TRUE()
+			)
+		formatString: #,0
+		displayFolder: Volume
+
+	/// Sum of amount in VND over all valid transactions incl. topup, withdraw, P2P
+	measure tpv =
+			CALCULATE(
+				SUM(fct_transactions[amount_vnd]),
+				fct_transactions[is_valid] = TRUE()
+			)
+		formatString: #,0
+		displayFolder: Volume
+
+	/// Number of valid transactions of all types
+	measure txn_count =
+			CALCULATE(
+				COUNTROWS(fct_transactions),
+				fct_transactions[is_valid] = TRUE()
+			)
+		formatString: #,0
+		displayFolder: Volume
+
+	/// Sum of revenue_vnd (MDR, bill and top-up commission, withdraw fees)
+	measure gross_revenue =
+			CALCULATE(
+				SUM(fct_transactions[revenue_vnd]),
+				fct_transactions[is_valid] = TRUE()
+			)
+		formatString: #,0
+		displayFolder: Revenue
+
+	/// Sum of discount_vnd (cashback, discounts)
+	measure promo_cost =
+			CALCULATE(
+				SUM(fct_transactions[discount_vnd]),
+				fct_transactions[is_valid] = TRUE()
+			)
+		formatString: #,0
+		displayFolder: Revenue
+
+	/// gross_revenue - promo_cost (North Star)
+	measure net_revenue =
+			[gross_revenue] - [promo_cost]
+		formatString: #,0
+		displayFolder: Revenue
+
+	/// gross_revenue / gmv (ratio)
+	measure take_rate =
+			DIVIDE([gross_revenue], [gmv])
+		formatString: 0.00%
+		displayFolder: Revenue
+
+	/// Distinct users with a valid transaction of any type
+	measure active_users =
+			CALCULATE(
+				DISTINCTCOUNT(fct_transactions[user_id]),
+				fct_transactions[is_valid] = TRUE()
+			)
+		formatString: #,0
+		displayFolder: Users
+
+	/// Distinct users with a valid spending transaction
+	measure paying_users =
+			CALCULATE(
+				DISTINCTCOUNT(fct_transactions[user_id]),
+				fct_transactions[is_valid] = TRUE(),
+				fct_transactions[is_spending] = TRUE()
+			)
+		formatString: #,0
+		displayFolder: Users
+
+	/// gmv / count of valid spending transactions
+	measure avg_ticket =
+			DIVIDE(
+				[gmv],
+				CALCULATE(
+					COUNTROWS(fct_transactions),
+					fct_transactions[is_valid] = TRUE(),
+					fct_transactions[is_spending] = TRUE()
+				)
+			)
+		formatString: #,0
+		displayFolder: Volume
+
+	/// net_revenue / active_users in the same slice
+	measure arpu =
+			DIVIDE([net_revenue], [active_users])
+		formatString: #,0
+		displayFolder: Revenue
+
+	/// count(success) / count(success + failed) over non-test users, all txn_types; refunded excluded from the denominator
+	measure payment_success_rate =
+			VAR _events =
+				CALCULATE(
+					COUNTROWS(fct_transactions),
+					fct_transactions[status] = "success",
+					fct_transactions[is_test_user] = FALSE()
+				)
+			VAR _attempts =
+				CALCULATE(
+					COUNTROWS(fct_transactions),
+					fct_transactions[status] IN {"success", "failed"},
+					fct_transactions[is_test_user] = FALSE()
+				)
+			RETURN
+				DIVIDE(COALESCE(_events, 0), _attempts)
+		formatString: 0.0%
+		displayFolder: Health
+
+	/// count(refunded) / count(success + refunded) over non-test users, all txn_types
+	measure refund_rate =
+			VAR _events =
+				CALCULATE(
+					COUNTROWS(fct_transactions),
+					fct_transactions[status] = "refunded",
+					fct_transactions[is_test_user] = FALSE()
+				)
+			VAR _attempts =
+				CALCULATE(
+					COUNTROWS(fct_transactions),
+					fct_transactions[status] IN {"success", "refunded"},
+					fct_transactions[is_test_user] = FALSE()
+				)
+			RETURN
+				DIVIDE(COALESCE(_events, 0), _attempts)
+		formatString: 0.0%
+		displayFolder: Health
+
+	/// Users who signed up in the period (non-test users)
+	measure new_users =
+			CALCULATE(
+				COUNTROWS(dim_users),
+				dim_users[is_test_user] = FALSE(),
+				USERELATIONSHIP(dim_users[signup_date_vn], dim_date[date_day])
+			)
+		formatString: #,0
+		displayFolder: Users
+
+	/// Share of new users with a valid spending transaction within 7 days of signup; users with an incomplete 7-day window are excluded from both sides
+	measure activation_rate_7d =
+			VAR _base =
+				CALCULATE(
+					COUNTROWS(dim_users),
+					dim_users[is_test_user] = FALSE(),
+					dim_users[is_activation_window_complete] = TRUE(),
+					USERELATIONSHIP(dim_users[signup_date_vn], dim_date[date_day])
+				)
+			VAR _act =
+				CALCULATE(
+					COUNTROWS(dim_users),
+					dim_users[is_test_user] = FALSE(),
+					dim_users[is_activation_window_complete] = TRUE(),
+					dim_users[is_activated_7d] = TRUE(),
+					USERELATIONSHIP(dim_users[signup_date_vn], dim_date[date_day])
+				)
+			RETURN
+				DIVIDE(COALESCE(_act, 0), _base)
+		formatString: 0.0%
+		displayFolder: Engagement
+
+	/// Share of a signup cohort active in month 1 after signup. Numerator: distinct non-test users with a valid transaction in month 1. Denominator: non-test users of the same cohort with months_observable >= 1. Immature cohorts are blank, never 0
+	measure retention_m1 =
+			VAR _k = 1
+			VAR _cohort_size =
+				CALCULATE(
+					COUNTROWS(dim_users),
+					dim_users[is_test_user] = FALSE(),
+					dim_users[months_observable] >= _k
+				)
+			VAR _retained =
+				CALCULATE(
+					DISTINCTCOUNT(fct_user_monthly_activity[user_id]),
+					fct_user_monthly_activity[months_since_signup] = _k,
+					dim_users[is_test_user] = FALSE(),
+					dim_users[months_observable] >= _k
+				)
+			RETURN
+				DIVIDE(COALESCE(_retained, 0), _cohort_size)
+		formatString: 0.0%
+		displayFolder: Engagement
+
+	/// Share of a signup cohort active in month 3 after signup. Numerator: distinct non-test users with a valid transaction in month 3. Denominator: non-test users of the same cohort with months_observable >= 3. Immature cohorts are blank, never 0
+	measure retention_m3 =
+			VAR _k = 3
+			VAR _cohort_size =
+				CALCULATE(
+					COUNTROWS(dim_users),
+					dim_users[is_test_user] = FALSE(),
+					dim_users[months_observable] >= _k
+				)
+			VAR _retained =
+				CALCULATE(
+					DISTINCTCOUNT(fct_user_monthly_activity[user_id]),
+					fct_user_monthly_activity[months_since_signup] = _k,
+					dim_users[is_test_user] = FALSE(),
+					dim_users[months_observable] >= _k
+				)
+			RETURN
+				DIVIDE(COALESCE(_retained, 0), _cohort_size)
+		formatString: 0.0%
+		displayFolder: Engagement
+
+	column _
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: _
+
+	partition _Measures = m
+		mode: import
+		source = #table(type table [_ = text], {})

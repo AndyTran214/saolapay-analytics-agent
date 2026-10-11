@@ -1,0 +1,1 @@
+expression DataFolder = "D:\saolapay-analytics-agent\data" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]

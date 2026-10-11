@@ -1,0 +1,103 @@
+/// Canonical transaction fact: de-duplicated, Vietnam time, ALL statuses. For business metrics ALWAYS filter is_valid (and is_spending for GMV).
+table fct_transactions
+
+	/// FK to dim_users.
+	column user_id
+		dataType: string
+		isHidden
+		sourceColumn: user_id
+
+	/// FK to dim_promotions, NULL when no promotion.
+	column promotion_id
+		dataType: string
+		isHidden
+		sourceColumn: promotion_id
+
+	/// topup, withdraw, p2p_transfer, merchant_payment, bill_payment, mobile_topup.
+	column txn_type
+		dataType: string
+		sourceColumn: txn_type
+
+	/// spending / money_in / money_out / transfer. GMV counts only spending; topup, withdraw and P2P are NOT GMV (they are part of TPV).
+	column txn_group
+		dataType: string
+		sourceColumn: txn_group
+
+	/// True for merchant_payment, bill_payment, mobile_topup. GMV = sum(amount_vnd) where is_valid and is_spending.
+	column is_spending
+		dataType: boolean
+		isHidden
+		sourceColumn: is_spending
+
+	/// success / failed / refunded. Refunded is NOT success. For business metrics use is_valid instead of filtering status yourself. EXCEPTION: payment success rate = count(status = 'success') / count(status in ('success','failed')) over NON-TEST users (filter NOT is_test_user, not is_valid); refunded is excluded from the denominator. Failure rate = failed / (success + failed).
+	column status
+		dataType: string
+		sourceColumn: status
+
+	/// True if the user is an internal test account. Exclude from business metrics (already folded into is_valid).
+	column is_test_user
+		dataType: boolean
+		isHidden
+		sourceColumn: is_test_user
+
+	/// status = 'success' AND NOT is_test_user. ALWAYS filter is_valid for business metrics (GMV, TPV, revenue, promo cost, active users, retention). Payment success/failure rate is the exception: it needs status in ('success','failed') of non-test users (NOT is_test_user), with refunded excluded from the denominator.
+	column is_valid
+		dataType: boolean
+		isHidden
+		sourceColumn: is_valid
+
+	/// Transaction date in Vietnam time. Always bucket days/weeks/months on this, not on UTC (transactions between 0h and 7h Vietnam time would otherwise shift one day).
+	column txn_date_vn
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		sourceColumn: txn_date_vn
+		annotation UnderlyingDateTimeDataType = Date
+
+	/// Amount in VND, always positive.
+	column amount_vnd
+		dataType: int64
+		isHidden
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: amount_vnd
+
+	/// Promo discount / cashback in VND (promo cost), 0 if none. WARNING: non-zero for test users and non-success rows too, so ALWAYS filter is_valid before summing it (summing it unfiltered overstates promo cost).
+	column discount_vnd
+		dataType: int64
+		isHidden
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: discount_vnd
+
+	/// Gross revenue of SaolaPay for this transaction: merchant_payment = amount x the merchant commission rate, bill_payment = amount x 0.3%, mobile_topup = amount x 2.5%, withdraw = the withdrawal fee, others 0. Already 0 unless is_valid (failed, refunded and test-user rows are 0), so summing it is safe. Net revenue = revenue_vnd - discount_vnd (discount summed over is_valid rows).
+	column revenue_vnd
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: revenue_vnd
+
+	/// OS of the device at transaction time (about 3% differ from the user's signup OS). Use this column for transaction visuals.
+	column device_os
+		dataType: string
+		sourceColumn: device_os
+
+	/// app_qr / app_online / app_transfer.
+	column channel
+		dataType: string
+		sourceColumn: channel
+
+	/// Category of the merchant (denormalised onto the transaction; the merchant dimension is not loaded in this model). Always set for merchant_payment, NULL for other txn types.
+	column merchant_category
+		dataType: string
+		sourceColumn: merchant_category
+
+	partition fct_transactions = m
+		mode: import
+		source =
+				let
+					Source = Parquet.Document(File.Contents(DataFolder & "\fct_transactions.parquet")),
+					Keep = Table.SelectColumns(Source, {"user_id", "promotion_id", "txn_type", "txn_group", "is_spending", "status", "is_test_user", "is_valid", "txn_date_vn", "amount_vnd", "discount_vnd", "revenue_vnd", "device_os", "channel", "merchant_category"}),
+					Typed = Table.TransformColumnTypes(Keep, {{"user_id", type text}, {"promotion_id", type text}, {"txn_type", type text}, {"txn_group", type text}, {"is_spending", type logical}, {"status", type text}, {"is_test_user", type logical}, {"is_valid", type logical}, {"txn_date_vn", type date}, {"amount_vnd", Int64.Type}, {"discount_vnd", Int64.Type}, {"revenue_vnd", type number}, {"device_os", type text}, {"channel", type text}, {"merchant_category", type text}})
+				in
+					Typed

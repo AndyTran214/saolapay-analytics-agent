@@ -1,0 +1,26 @@
+/// Monthly user activity, VALID transactions only; one row per user and Vietnam month with at least one valid transaction. EXACT RETENTION RECIPE for Mk: numerator = count distinct user_id in this table with months_since_signup = k (join dim_users to group by cohort or channel); denominator = count of dim_users where NOT is_test_user AND months_observable >= k (same cohort or channel). Cohorts observed for fewer than k full months must be excluded. Excluding censored cohorts is mandatory; including them understates retention. Never divide by the whole cohort size.
+table fct_user_monthly_activity
+
+	/// FK to dim_users.
+	column user_id
+		dataType: string
+		isHidden
+		sourceColumn: user_id
+
+	/// Whole calendar months between the user's signup cohort month and the activity month: calendar months after the signup month (0 = signup month, 3 = third month after signup). Never negative. Retention Mk uses months_since_signup = k, with denominator = non-test users whose dim_users.months_observable >= k.
+	column months_since_signup
+		dataType: int64
+		isHidden
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: months_since_signup
+
+	partition fct_user_monthly_activity = m
+		mode: import
+		source =
+				let
+					Source = Parquet.Document(File.Contents(DataFolder & "\fct_user_monthly_activity.parquet")),
+					Keep = Table.SelectColumns(Source, {"user_id", "months_since_signup"}),
+					Typed = Table.TransformColumnTypes(Keep, {{"user_id", type text}, {"months_since_signup", Int64.Type}})
+				in
+					Typed

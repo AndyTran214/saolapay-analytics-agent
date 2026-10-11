@@ -1,0 +1,85 @@
+/// Calendar dimension 2024-01-01 to 2025-12-31 (Vietnam dates). Weeks start on Monday.
+table dim_date
+	dataCategory: Time
+
+	/// Primary key, calendar date.
+	column date_day
+		dataType: dateTime
+		isKey
+		formatString: yyyy-mm-dd
+		sourceColumn: date_day
+		annotation UnderlyingDateTimeDataType = Date
+
+	/// Calendar year.
+	column year
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: year
+
+	/// Calendar quarter 1-4.
+	column quarter
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: quarter
+
+	/// Month number 1-12.
+	column month
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: month
+
+	/// First day of the month.
+	column month_start
+		dataType: dateTime
+		formatString: mmm yyyy
+		sourceColumn: month_start
+		annotation UnderlyingDateTimeDataType = Date
+
+	/// Monday of the week (weeks start on Monday).
+	column week_start
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		sourceColumn: week_start
+		annotation UnderlyingDateTimeDataType = Date
+
+	/// ISO day of week, 1 = Monday ... 7 = Sunday.
+	column day_of_week
+		dataType: int64
+		isHidden
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: day_of_week
+
+	/// English day name.
+	column day_name
+		dataType: string
+		sourceColumn: day_name
+		sortByColumn: day_of_week
+
+	/// True on Saturday and Sunday.
+	column is_weekend
+		dataType: boolean
+		sourceColumn: is_weekend
+
+	/// True on day-of-month 1-5 and 15-16 (salary period; top-up peaks).
+	column is_payday
+		dataType: boolean
+		sourceColumn: is_payday
+
+	/// True from 10 days before Tet to 5 days after Tet (a window around the Tet holiday).
+	column is_tet_period
+		dataType: boolean
+		sourceColumn: is_tet_period
+
+	partition dim_date = m
+		mode: import
+		source =
+				let
+					Source = Parquet.Document(File.Contents(DataFolder & "\dim_date.parquet")),
+					Keep = Table.SelectColumns(Source, {"date_day", "year", "quarter", "month", "month_start", "week_start", "day_of_week", "day_name", "is_weekend", "is_payday", "is_tet_period"}),
+					Typed = Table.TransformColumnTypes(Keep, {{"date_day", type date}, {"year", Int64.Type}, {"quarter", Int64.Type}, {"month", Int64.Type}, {"month_start", type date}, {"week_start", type date}, {"day_of_week", Int64.Type}, {"day_name", type text}, {"is_weekend", type logical}, {"is_payday", type logical}, {"is_tet_period", type logical}})
+				in
+					Typed

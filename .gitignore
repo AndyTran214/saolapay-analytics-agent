@@ -1,0 +1,4 @@
+.pbi/
+**/.pbi/
+*.abf
+localSettings.json

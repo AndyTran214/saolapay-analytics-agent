@@ -1,0 +1,231 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "8e9bd9a96527d770c02d",
+  "position": {
+    "x": 20,
+    "y": 556,
+    "z": 80,
+    "height": 154,
+    "width": 880,
+    "tabOrder": 80
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_promotions"
+                    }
+                  },
+                  "Property": "promo_name"
+                }
+              },
+              "queryRef": "dim_promotions.promo_name",
+              "nativeQueryRef": "promo_name"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_promotions"
+                    }
+                  },
+                  "Property": "promo_type"
+                }
+              },
+              "queryRef": "dim_promotions.promo_type",
+              "nativeQueryRef": "promo_type"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_promotions"
+                    }
+                  },
+                  "Property": "target_segment"
+                }
+              },
+              "queryRef": "dim_promotions.target_segment",
+              "nativeQueryRef": "target_segment"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_promotions"
+                    }
+                  },
+                  "Property": "start_date"
+                }
+              },
+              "queryRef": "dim_promotions.start_date",
+              "nativeQueryRef": "start_date"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_promotions"
+                    }
+                  },
+                  "Property": "end_date"
+                }
+              },
+              "queryRef": "dim_promotions.end_date",
+              "nativeQueryRef": "end_date"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_promotions"
+                    }
+                  },
+                  "Property": "discount_pct"
+                }
+              },
+              "queryRef": "dim_promotions.discount_pct",
+              "nativeQueryRef": "discount_pct"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_promotions"
+                    }
+                  },
+                  "Property": "budget_vnd"
+                }
+              },
+              "queryRef": "dim_promotions.budget_vnd",
+              "nativeQueryRef": "budget_vnd"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Promotion reference'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "11D"
+                }
+              }
+            },
+            "bold": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#1F2937'"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "transparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#D8DEE9'"
+                    }
+                  }
+                }
+              }
+            },
+            "radius": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

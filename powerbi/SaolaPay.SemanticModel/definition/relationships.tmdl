@@ -1,0 +1,20 @@
+relationship r1_txn_user
+	fromColumn: fct_transactions.user_id
+	toColumn: dim_users.user_id
+
+relationship r2_txn_date
+	fromColumn: fct_transactions.txn_date_vn
+	toColumn: dim_date.date_day
+
+relationship r3_txn_promotion
+	fromColumn: fct_transactions.promotion_id
+	toColumn: dim_promotions.promotion_id
+
+relationship r4_monthly_user
+	fromColumn: fct_user_monthly_activity.user_id
+	toColumn: dim_users.user_id
+
+relationship r5_user_signup_date
+	isActive: false
+	fromColumn: dim_users.signup_date_vn
+	toColumn: dim_date.date_day

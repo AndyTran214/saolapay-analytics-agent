@@ -1,0 +1,68 @@
+/// Promotion dimension (campaign definitions). Actual cost lives in fct_transactions.discount_vnd.
+table dim_promotions
+
+	/// Primary key.
+	column promotion_id
+		dataType: string
+		isHidden
+		sourceColumn: promotion_id
+
+	/// Promotion display name.
+	column promo_name
+		dataType: string
+		sourceColumn: promo_name
+
+	/// cashback or discount.
+	column promo_type
+		dataType: string
+		sourceColumn: promo_type
+
+	/// First day of the promotion.
+	column start_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		sourceColumn: start_date
+		annotation UnderlyingDateTimeDataType = Date
+
+	/// Last day of the promotion.
+	column end_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		sourceColumn: end_date
+		annotation UnderlyingDateTimeDataType = Date
+
+	/// new_user or all.
+	column target_segment
+		dataType: string
+		sourceColumn: target_segment
+
+	/// Discount as a fraction of the amount.
+	column discount_pct
+		dataType: double
+		formatString: 0.0%
+		summarizeBy: none
+		sourceColumn: discount_pct
+
+	/// Per-transaction cap in VND.
+	column max_discount_vnd
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: max_discount_vnd
+
+	/// Total budget in VND.
+	column budget_vnd
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: budget_vnd
+
+	partition dim_promotions = m
+		mode: import
+		source =
+				let
+					Source = Parquet.Document(File.Contents(DataFolder & "\dim_promotions.parquet")),
+					Keep = Table.SelectColumns(Source, {"promotion_id", "promo_name", "promo_type", "start_date", "end_date", "target_segment", "discount_pct", "max_discount_vnd", "budget_vnd"}),
+					Typed = Table.TransformColumnTypes(Keep, {{"promotion_id", type text}, {"promo_name", type text}, {"promo_type", type text}, {"start_date", type date}, {"end_date", type date}, {"target_segment", type text}, {"discount_pct", type number}, {"max_discount_vnd", Int64.Type}, {"budget_vnd", Int64.Type}})
+				in
+					Typed

@@ -1,0 +1,95 @@
+/// WARNING: this table contains 400 internal TEST users (is_test_user = true), kept only so foreign keys resolve. For ANY user count (new users, activation, retention, cohort size, active users) you MUST filter NOT is_test_user. One row per user. kyc_level is the CURRENT value, not the value at transaction time. Data is right-censored at the data end date (2025-12-31): activation rate = average of is_activated_7d over users with is_activation_window_complete (and NOT is_test_user); retention Mk denominator = non-test users with months_observable >= k (see fct_user_monthly_activity).
+table dim_users
+
+	/// Primary key.
+	column user_id
+		dataType: string
+		isHidden
+		sourceColumn: user_id
+
+	/// Signup date in Vietnam time.
+	column signup_date_vn
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		sourceColumn: signup_date_vn
+		annotation UnderlyingDateTimeDataType = Date
+
+	/// First day of the signup month in Vietnam time; cohort key for retention.
+	column signup_cohort_month
+		dataType: dateTime
+		formatString: mmm yyyy
+		sourceColumn: signup_cohort_month
+		annotation UnderlyingDateTimeDataType = Date
+
+	/// Province / city.
+	column province
+		dataType: string
+		sourceColumn: province
+
+	/// Region: Bac / Trung / Nam.
+	column region
+		dataType: string
+		sourceColumn: region
+
+	/// Normalised gender M / F / U.
+	column gender
+		dataType: string
+		sourceColumn: gender
+
+	/// Age at signup year bucketed: <18, 18-24, 25-34, 35-44, 45-54, 55+, unknown when the year of birth is missing.
+	column age_band
+		dataType: string
+		sourceColumn: age_band
+
+	/// organic / referral / paid_ads / promo_new_user.
+	column acquisition_channel
+		dataType: string
+		sourceColumn: acquisition_channel
+
+	/// CURRENT KYC level (0 none, 1 phone, 2 ID + bank). Not the level at the time of any transaction.
+	column kyc_level
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: kyc_level
+
+	/// User's device OS (android / ios) at signup. Use this column for cohort visuals; transaction visuals use fct_transactions[device_os].
+	column device_os
+		dataType: string
+		sourceColumn: device_os
+
+	/// True for the 400 internal test accounts; ALWAYS filter NOT is_test_user for user-level business metrics (new users, activation, retention, cohort size).
+	column is_test_user
+		dataType: boolean
+		isHidden
+		sourceColumn: is_test_user
+
+	/// True if the user has at least one valid spending transaction within 7 days (168 hours) after signup. False for users with none, and for test users. RIGHT-CENSORED: for users with is_activation_window_complete = false a FALSE value is NOT final (the 7-day window is not fully observed), so exclude them from the rate; a TRUE value is always valid. Activation 7d rate = avg(is_activated_7d) over users where NOT is_test_user AND is_activation_window_complete. Never average over all users.
+	column is_activated_7d
+		dataType: boolean
+		isHidden
+		sourceColumn: is_activated_7d
+
+	/// True if signup time (Vietnam time) + 7 days <= end of data_end_date (2025-12-31 inclusive), i.e. the full 7-day activation window was observable. Users who signed up on or after 2025-12-25 are false. Activation 7d rate = avg(is_activated_7d) over users with is_activation_window_complete AND NOT is_test_user.
+	column is_activation_window_complete
+		dataType: boolean
+		isHidden
+		sourceColumn: is_activation_window_complete
+
+	/// Number of full calendar months between signup_cohort_month and the data end month (December 2025): whole calendar months from the signup cohort month to that month. A user who signed up in 2025-09 has 3. Retention Mk denominator = non-test users with months_observable >= k; cohorts with months_observable < k are censored and must be excluded.
+	column months_observable
+		dataType: int64
+		isHidden
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: months_observable
+
+	partition dim_users = m
+		mode: import
+		source =
+				let
+					Source = Parquet.Document(File.Contents(DataFolder & "\dim_users.parquet")),
+					Keep = Table.SelectColumns(Source, {"user_id", "signup_date_vn", "signup_cohort_month", "province", "region", "gender", "age_band", "acquisition_channel", "kyc_level", "device_os", "is_test_user", "is_activated_7d", "is_activation_window_complete", "months_observable"}),
+					Typed = Table.TransformColumnTypes(Keep, {{"user_id", type text}, {"signup_date_vn", type date}, {"signup_cohort_month", type date}, {"province", type text}, {"region", type text}, {"gender", type text}, {"age_band", type text}, {"acquisition_channel", type text}, {"kyc_level", Int64.Type}, {"device_os", type text}, {"is_test_user", type logical}, {"is_activated_7d", type logical}, {"is_activation_window_complete", type logical}, {"months_observable", Int64.Type}})
+				in
+					Typed
