@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
   "name": "1c2a51834c1d68a7a422",
   "position": {
-    "x": 860.0,
+    "x": 860,
     "y": 126,
     "z": 80,
     "height": 84,
-    "width": 190.0,
+    "width": 190,
     "tabOrder": 80
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "paying_users"
+                  "Property": "avg_monthly_arpu"
                 }
               },
-              "queryRef": "_Measures.paying_users",
-              "nativeQueryRef": "paying_users"
+              "queryRef": "_Measures.avg_monthly_arpu",
+              "nativeQueryRef": "avg_monthly_arpu"
             }
           ]
         }
@@ -86,7 +86,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Paying users'"
+                  "Value": "'Avg monthly ARPU (VND)'"
                 }
               }
             },

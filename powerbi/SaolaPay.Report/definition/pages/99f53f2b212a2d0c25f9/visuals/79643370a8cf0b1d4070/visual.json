@@ -1,18 +1,37 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "79643370a8cf0b1d4070",
   "position": {
-    "x": 440,
+    "x": 310,
     "y": 222,
     "z": 90,
     "height": 488,
-    "width": 420,
+    "width": 330,
     "tabOrder": 90
   },
   "visual": {
     "visualType": "pivotTable",
     "query": {
       "queryState": {
+        "Columns": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_users"
+                    }
+                  },
+                  "Property": "acquisition_channel"
+                }
+              },
+              "queryRef": "dim_users.acquisition_channel",
+              "nativeQueryRef": "acquisition_channel",
+              "active": true
+            }
+          ]
+        },
         "Rows": {
           "projections": [
             {
@@ -27,7 +46,8 @@
                 }
               },
               "queryRef": "dim_users.signup_cohort_month",
-              "nativeQueryRef": "signup_cohort_month"
+              "nativeQueryRef": "signup_cohort_month",
+              "active": true
             }
           ]
         },
@@ -46,24 +66,6 @@
               },
               "queryRef": "_Measures.retention_m3",
               "nativeQueryRef": "retention_m3"
-            }
-          ]
-        },
-        "Columns": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "dim_users"
-                    }
-                  },
-                  "Property": "acquisition_channel"
-                }
-              },
-              "queryRef": "dim_users.acquisition_channel",
-              "nativeQueryRef": "acquisition_channel"
             }
           ]
         }

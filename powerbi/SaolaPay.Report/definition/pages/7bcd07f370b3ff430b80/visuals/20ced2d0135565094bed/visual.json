@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "20ced2d0135565094bed",
   "position": {
-    "x": 650,
-    "y": 467,
+    "x": 860,
+    "y": 222,
     "z": 130,
-    "height": 243,
-    "width": 610,
+    "height": 238,
+    "width": 400,
     "tabOrder": 130
   },
   "visual": {
@@ -27,26 +27,13 @@
                 }
               },
               "queryRef": "dim_date.month_start",
-              "nativeQueryRef": "month_start"
+              "nativeQueryRef": "month_start",
+              "active": true
             }
           ]
         },
         "Y": {
           "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "avg_ticket"
-                }
-              },
-              "queryRef": "_Measures.avg_ticket",
-              "nativeQueryRef": "avg_ticket"
-            },
             {
               "field": {
                 "Measure": {
@@ -90,14 +77,7 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
-            "position": {
-              "expr": {
-                "Literal": {
-                  "Value": "'Top'"
+                  "Value": "false"
                 }
               }
             }
@@ -119,7 +99,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Average ticket and ARPU by month (VND)'"
+                  "Value": "'ARPU by month (VND)'"
                 }
               }
             },

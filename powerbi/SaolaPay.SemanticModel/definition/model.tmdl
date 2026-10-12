@@ -3,8 +3,15 @@ model Model
 	defaultPowerBIDataSourceVersion: powerBI_V3
 	discourageImplicitMeasures
 	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
 
 annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_QueryOrder = ["_Measures","fct_transactions","fct_user_monthly_activity","dim_users","dim_date","dim_promotions","DataFolder"]
+
+annotation PBI_ProTooling = ["DevMode"]
 
 ref table _Measures
 ref table fct_transactions
@@ -12,3 +19,4 @@ ref table fct_user_monthly_activity
 ref table dim_users
 ref table dim_date
 ref table dim_promotions
+

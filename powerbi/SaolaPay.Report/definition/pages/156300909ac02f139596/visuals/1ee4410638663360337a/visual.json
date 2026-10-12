@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "1ee4410638663360337a",
   "position": {
-    "x": 650,
-    "y": 321,
+    "x": 440,
+    "y": 336,
     "z": 70,
-    "height": 185,
-    "width": 610,
+    "height": 180,
+    "width": 820,
     "tabOrder": 70
   },
   "visual": {
@@ -27,7 +27,8 @@
                 }
               },
               "queryRef": "dim_date.month_start",
-              "nativeQueryRef": "month_start"
+              "nativeQueryRef": "month_start",
+              "active": true
             }
           ]
         },
@@ -41,29 +42,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "take_rate"
+                  "Property": "transport_share_merchant_gmv"
                 }
               },
-              "queryRef": "_Measures.take_rate",
-              "nativeQueryRef": "take_rate"
-            }
-          ]
-        },
-        "Series": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "fct_transactions"
-                    }
-                  },
-                  "Property": "txn_type"
-                }
-              },
-              "queryRef": "fct_transactions.txn_type",
-              "nativeQueryRef": "txn_type"
+              "queryRef": "_Measures.transport_share_merchant_gmv",
+              "nativeQueryRef": "transport_share_merchant_gmv"
             }
           ]
         }
@@ -94,14 +77,7 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
-            "position": {
-              "expr": {
-                "Literal": {
-                  "Value": "'Top'"
+                  "Value": "false"
                 }
               }
             }
@@ -123,7 +99,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Take rate by month and transaction type'"
+                  "Value": "'Transport share of merchant GMV by month'"
                 }
               }
             },

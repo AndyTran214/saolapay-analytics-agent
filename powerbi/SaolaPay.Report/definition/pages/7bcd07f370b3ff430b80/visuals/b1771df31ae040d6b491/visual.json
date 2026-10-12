@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
   "name": "b1771df31ae040d6b491",
   "position": {
-    "x": 650.0,
+    "x": 650,
     "y": 126,
     "z": 70,
     "height": 84,
-    "width": 190.0,
+    "width": 190,
     "tabOrder": 70
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "active_users"
+                  "Property": "avg_mau"
                 }
               },
-              "queryRef": "_Measures.active_users",
-              "nativeQueryRef": "active_users"
+              "queryRef": "_Measures.avg_mau",
+              "nativeQueryRef": "avg_mau"
             }
           ]
         }
@@ -86,7 +86,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Active users'"
+                  "Value": "'Avg monthly active users'"
                 }
               }
             },

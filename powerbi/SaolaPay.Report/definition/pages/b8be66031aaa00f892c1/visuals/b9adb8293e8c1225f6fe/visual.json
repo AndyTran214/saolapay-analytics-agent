@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "b9adb8293e8c1225f6fe",
   "position": {
-    "x": 271.0,
+    "x": 271,
     "y": 54,
     "z": 20,
     "height": 62,
-    "width": 236.0,
+    "width": 236,
     "tabOrder": 20
   },
   "visual": {
@@ -27,7 +27,8 @@
                 }
               },
               "queryRef": "dim_date.month_start",
-              "nativeQueryRef": "month_start"
+              "nativeQueryRef": "month_start",
+              "active": true
             }
           ]
         }

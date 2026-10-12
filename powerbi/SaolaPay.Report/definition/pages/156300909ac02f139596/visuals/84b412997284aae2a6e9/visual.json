@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
   "name": "84b412997284aae2a6e9",
   "position": {
-    "x": 920,
-    "y": 516,
+    "x": 20,
+    "y": 596,
     "z": 90,
-    "height": 194,
-    "width": 340,
+    "height": 114,
+    "width": 400,
     "tabOrder": 90
   },
   "visual": {
@@ -19,9 +19,9 @@
               {
                 "textRuns": [
                   {
-                    "value": "Reading note: GMV counts spending products only (merchant payment, bill payment, mobile top-up). Top-up, withdraw and P2P transfer carry no GMV, so their take rate is blank by definition.",
+                    "value": "Reading note: GMV counts spending products only (merchant payment, bill payment, mobile top-up); top-up, withdraw and P2P carry no GMV, so their take rate is blank by definition. Transport pays a low merchant fee, so as its share of merchant GMV grows the blended take rate is pulled down, even if no category changes its own rate.",
                     "textStyle": {
-                      "fontSize": "11pt",
+                      "fontSize": "10pt",
                       "color": "#1F2937"
                     }
                   }

@@ -1,7 +1,7 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.0.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
   "name": "8c6a05ad27ff0c5c2b8e",
-  "displayName": "Promotion ROI: What do promotions cost, and what revenue do transactions using them generate?",
+  "displayName": "Promotion",
   "displayOption": "FitToPage",
   "height": 720,
   "width": 1280,
@@ -30,5 +30,22 @@
         }
       }
     ]
-  }
+  },
+  "visualInteractions": [
+    {
+      "source": "f6d415b7d488f064e5d4",
+      "target": "96c5d2c5bb036f645bf6",
+      "type": "NoFilter"
+    },
+    {
+      "source": "b9defc3b45c9a4d72b98",
+      "target": "96c5d2c5bb036f645bf6",
+      "type": "NoFilter"
+    },
+    {
+      "source": "e7c442850015f0b8f873",
+      "target": "96c5d2c5bb036f645bf6",
+      "type": "NoFilter"
+    }
+  ]
 }

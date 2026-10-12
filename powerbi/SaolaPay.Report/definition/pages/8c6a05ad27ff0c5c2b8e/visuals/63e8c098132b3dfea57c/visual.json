@@ -1,9 +1,9 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "63e8c098132b3dfea57c",
   "position": {
     "x": 660,
-    "y": 356,
+    "y": 246,
     "z": 70,
     "height": 190,
     "width": 600,
@@ -27,25 +27,8 @@
                 }
               },
               "queryRef": "dim_date.month_start",
-              "nativeQueryRef": "month_start"
-            }
-          ]
-        },
-        "Y": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "promo_cost"
-                }
-              },
-              "queryRef": "_Measures.promo_cost",
-              "nativeQueryRef": "promo_cost"
+              "nativeQueryRef": "month_start",
+              "active": true
             }
           ]
         },
@@ -64,6 +47,24 @@
               },
               "queryRef": "dim_promotions.promo_name",
               "nativeQueryRef": "promo_name"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "promo_cost"
+                }
+              },
+              "queryRef": "_Measures.promo_cost",
+              "nativeQueryRef": "promo_cost"
             }
           ]
         }

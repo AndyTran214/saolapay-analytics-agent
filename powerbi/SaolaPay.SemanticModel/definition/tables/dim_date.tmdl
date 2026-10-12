@@ -1,5 +1,6 @@
 /// Calendar dimension 2024-01-01 to 2025-12-31 (Vietnam dates). Weeks start on Monday.
 table dim_date
+	lineageTag: 89035be9-cdef-431e-a87c-faf9a3d60b28
 	dataCategory: Time
 
 	/// Primary key, calendar date.
@@ -7,13 +8,16 @@ table dim_date
 		dataType: dateTime
 		isKey
 		formatString: yyyy-mm-dd
+		lineageTag: cd674a8d-019b-43ec-8fec-8254c58d58f9
 		sourceColumn: date_day
+
 		annotation UnderlyingDateTimeDataType = Date
 
 	/// Calendar year.
 	column year
 		dataType: int64
 		formatString: 0
+		lineageTag: 250226c8-d6cb-4cdb-8201-c71fc19af4b4
 		summarizeBy: none
 		sourceColumn: year
 
@@ -21,6 +25,7 @@ table dim_date
 	column quarter
 		dataType: int64
 		formatString: 0
+		lineageTag: 842b0256-4f5a-4b00-8fd5-5ab270b7619b
 		summarizeBy: none
 		sourceColumn: quarter
 
@@ -28,6 +33,7 @@ table dim_date
 	column month
 		dataType: int64
 		formatString: 0
+		lineageTag: 8a6460c3-731e-4c27-b509-439f12a156dc
 		summarizeBy: none
 		sourceColumn: month
 
@@ -35,14 +41,18 @@ table dim_date
 	column month_start
 		dataType: dateTime
 		formatString: mmm yyyy
+		lineageTag: 04778ed5-7fc8-4e01-8fe4-96bb4259ae7f
 		sourceColumn: month_start
+
 		annotation UnderlyingDateTimeDataType = Date
 
 	/// Monday of the week (weeks start on Monday).
 	column week_start
 		dataType: dateTime
 		formatString: yyyy-mm-dd
+		lineageTag: 6ee117d5-fbe4-488f-b2fc-a78ec0f6c9a1
 		sourceColumn: week_start
+
 		annotation UnderlyingDateTimeDataType = Date
 
 	/// ISO day of week, 1 = Monday ... 7 = Sunday.
@@ -50,28 +60,33 @@ table dim_date
 		dataType: int64
 		isHidden
 		formatString: 0
+		lineageTag: 02a92230-4039-4555-8203-3f9c101c07fc
 		summarizeBy: none
 		sourceColumn: day_of_week
 
 	/// English day name.
 	column day_name
 		dataType: string
+		lineageTag: 0a9bdd81-3ab2-46ff-b445-3414ac024b28
 		sourceColumn: day_name
 		sortByColumn: day_of_week
 
 	/// True on Saturday and Sunday.
 	column is_weekend
 		dataType: boolean
+		lineageTag: 66257785-bf1f-4de9-949e-2f34af803e83
 		sourceColumn: is_weekend
 
 	/// True on day-of-month 1-5 and 15-16 (salary period; top-up peaks).
 	column is_payday
 		dataType: boolean
+		lineageTag: 0f9dfac8-fe3f-489e-b86c-2f2b378d14ec
 		sourceColumn: is_payday
 
 	/// True from 10 days before Tet to 5 days after Tet (a window around the Tet holiday).
 	column is_tet_period
 		dataType: boolean
+		lineageTag: fdf71b56-38c9-4aff-bed5-689ee72c163d
 		sourceColumn: is_tet_period
 
 	partition dim_date = m
@@ -83,3 +98,4 @@ table dim_date
 					Typed = Table.TransformColumnTypes(Keep, {{"date_day", type date}, {"year", Int64.Type}, {"quarter", Int64.Type}, {"month", Int64.Type}, {"month_start", type date}, {"week_start", type date}, {"day_of_week", Int64.Type}, {"day_name", type text}, {"is_weekend", type logical}, {"is_payday", type logical}, {"is_tet_period", type logical}})
 				in
 					Typed
+

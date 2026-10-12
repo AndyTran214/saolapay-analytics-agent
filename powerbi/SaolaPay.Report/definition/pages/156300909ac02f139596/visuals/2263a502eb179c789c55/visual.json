@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "2263a502eb179c789c55",
   "position": {
     "x": 20,
     "y": 126,
     "z": 40,
-    "height": 185,
-    "width": 610,
+    "height": 200,
+    "width": 620,
     "tabOrder": 40
   },
   "visual": {
@@ -27,25 +27,8 @@
                 }
               },
               "queryRef": "dim_date.month_start",
-              "nativeQueryRef": "month_start"
-            }
-          ]
-        },
-        "Y": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "tpv"
-                }
-              },
-              "queryRef": "_Measures.tpv",
-              "nativeQueryRef": "tpv"
+              "nativeQueryRef": "month_start",
+              "active": true
             }
           ]
         },
@@ -64,6 +47,24 @@
               },
               "queryRef": "fct_transactions.txn_type",
               "nativeQueryRef": "txn_type"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "tpv"
+                }
+              },
+              "queryRef": "_Measures.tpv",
+              "nativeQueryRef": "tpv"
             }
           ]
         }

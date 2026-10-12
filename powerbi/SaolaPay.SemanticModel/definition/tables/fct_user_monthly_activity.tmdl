@@ -1,10 +1,12 @@
 /// Monthly user activity, VALID transactions only; one row per user and Vietnam month with at least one valid transaction. EXACT RETENTION RECIPE for Mk: numerator = count distinct user_id in this table with months_since_signup = k (join dim_users to group by cohort or channel); denominator = count of dim_users where NOT is_test_user AND months_observable >= k (same cohort or channel). Cohorts observed for fewer than k full months must be excluded. Excluding censored cohorts is mandatory; including them understates retention. Never divide by the whole cohort size.
 table fct_user_monthly_activity
+	lineageTag: 3ceab334-8ca6-4b55-ad3b-0f699a9b907d
 
 	/// FK to dim_users.
 	column user_id
 		dataType: string
 		isHidden
+		lineageTag: d4dcec28-4de6-4057-9986-09c3647a6749
 		sourceColumn: user_id
 
 	/// Whole calendar months between the user's signup cohort month and the activity month: calendar months after the signup month (0 = signup month, 3 = third month after signup). Never negative. Retention Mk uses months_since_signup = k, with denominator = non-test users whose dim_users.months_observable >= k.
@@ -12,6 +14,7 @@ table fct_user_monthly_activity
 		dataType: int64
 		isHidden
 		formatString: 0
+		lineageTag: 8ec3fe33-73e7-4f9f-84e9-03e2caf40aa4
 		summarizeBy: none
 		sourceColumn: months_since_signup
 
@@ -24,3 +27,4 @@ table fct_user_monthly_activity
 					Typed = Table.TransformColumnTypes(Keep, {{"user_id", type text}, {"months_since_signup", Int64.Type}})
 				in
 					Typed
+

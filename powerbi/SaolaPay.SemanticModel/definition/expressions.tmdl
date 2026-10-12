@@ -1,1 +1,5 @@
 expression DataFolder = "D:\saolapay-analytics-agent\data" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: f300c71a-d10f-4b31-b50a-72e08b0310f5
+
+	annotation PBI_ResultType = Text
+

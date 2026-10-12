@@ -18,3 +18,4 @@ relationship r5_user_signup_date
 	isActive: false
 	fromColumn: dim_users.signup_date_vn
 	toColumn: dim_date.date_day
+

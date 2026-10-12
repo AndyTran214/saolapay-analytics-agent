@@ -1,11 +1,11 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "38e2ae496cd2102eb4b7",
   "position": {
-    "x": 20,
-    "y": 467,
+    "x": 650,
+    "y": 470,
     "z": 120,
-    "height": 243,
+    "height": 240,
     "width": 610,
     "tabOrder": 120
   },
@@ -27,7 +27,8 @@
                 }
               },
               "queryRef": "dim_date.month_start",
-              "nativeQueryRef": "month_start"
+              "nativeQueryRef": "month_start",
+              "active": true
             }
           ]
         },
@@ -46,6 +47,20 @@
               },
               "queryRef": "_Measures.take_rate",
               "nativeQueryRef": "take_rate"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "take_rate_ex_transport"
+                }
+              },
+              "queryRef": "_Measures.take_rate_ex_transport",
+              "nativeQueryRef": "take_rate_ex_transport"
             }
           ]
         }
@@ -76,7 +91,14 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
+                }
+              }
+            },
+            "position": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Top'"
                 }
               }
             }
@@ -98,7 +120,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Take rate by month'"
+                  "Value": "'Take rate by month: total vs excluding transport'"
                 }
               }
             },

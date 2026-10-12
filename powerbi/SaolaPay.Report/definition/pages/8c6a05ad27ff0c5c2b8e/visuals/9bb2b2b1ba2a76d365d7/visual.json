@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
   "name": "9bb2b2b1ba2a76d365d7",
   "position": {
-    "x": 920,
-    "y": 556,
+    "x": 680,
+    "y": 566,
     "z": 90,
-    "height": 154,
-    "width": 340,
+    "height": 144,
+    "width": 580,
     "tabOrder": 90
   },
   "visual": {
@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Reading note: net revenue here is net of promo cost for transactions carrying the promotion. It is not an incremental effect. The blank promotion row is the baseline of transactions without a promotion.",
+                    "value": "Reading note: net revenue here is net of promo cost for transactions carrying the promotion; it is not an incremental effect. Promo users activate fast but churn, so judge a campaign by retained users per VND (see the cohort matrix), not by sign-ups.",
                     "textStyle": {
                       "fontSize": "11pt",
                       "color": "#1F2937"

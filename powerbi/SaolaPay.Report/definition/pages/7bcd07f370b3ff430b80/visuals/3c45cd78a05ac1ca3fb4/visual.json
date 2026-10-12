@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
   "name": "3c45cd78a05ac1ca3fb4",
   "position": {
-    "x": 1070.0,
+    "x": 1070,
     "y": 126,
     "z": 90,
     "height": 84,
-    "width": 190.0,
+    "width": 190,
     "tabOrder": 90
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "arpu"
+                  "Property": "merchant_failure_rate"
                 }
               },
-              "queryRef": "_Measures.arpu",
-              "nativeQueryRef": "arpu"
+              "queryRef": "_Measures.merchant_failure_rate",
+              "nativeQueryRef": "merchant_failure_rate"
             }
           ]
         }
@@ -86,7 +86,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'ARPU (VND)'"
+                  "Value": "'Merchant payment failure rate'"
                 }
               }
             },

@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
   "name": "8a959685468d902045fb",
   "position": {
-    "x": 860.0,
+    "x": 860,
     "y": 126,
     "z": 80,
     "height": 84,
-    "width": 400.0,
+    "width": 400,
     "tabOrder": 80
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "txn_count"
+                  "Property": "merchant_refund_rate"
                 }
               },
-              "queryRef": "_Measures.txn_count",
-              "nativeQueryRef": "txn_count"
+              "queryRef": "_Measures.merchant_refund_rate",
+              "nativeQueryRef": "merchant_refund_rate"
             }
           ]
         }
@@ -86,7 +86,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Valid transactions'"
+                  "Value": "'Merchant payment refund rate'"
                 }
               }
             },

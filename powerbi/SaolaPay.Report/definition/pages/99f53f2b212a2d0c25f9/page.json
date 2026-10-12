@@ -1,7 +1,7 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.0.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
   "name": "99f53f2b212a2d0c25f9",
-  "displayName": "Growth & Retention: How well do new users activate and stay active, by signup cohort?",
+  "displayName": "Growth & Retention",
   "displayOption": "FitToPage",
   "height": 720,
   "width": 1280,

@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "7797842026febfa028fd",
   "position": {
-    "x": 1024.0,
+    "x": 1024,
     "y": 54,
     "z": 50,
     "height": 62,
-    "width": 236.0,
+    "width": 236,
     "tabOrder": 50
   },
   "visual": {
@@ -27,7 +27,8 @@
                 }
               },
               "queryRef": "fct_transactions.txn_type",
-              "nativeQueryRef": "txn_type"
+              "nativeQueryRef": "txn_type",
+              "active": true
             }
           ]
         }

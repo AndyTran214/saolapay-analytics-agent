@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "9449e1be1741183af8ed",
   "position": {
     "x": 650,
@@ -27,7 +27,8 @@
                 }
               },
               "queryRef": "dim_date.month_start",
-              "nativeQueryRef": "month_start"
+              "nativeQueryRef": "month_start",
+              "active": true
             }
           ]
         },
@@ -41,11 +42,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "refund_rate"
+                  "Property": "merchant_refund_rate"
                 }
               },
-              "queryRef": "_Measures.refund_rate",
-              "nativeQueryRef": "refund_rate"
+              "queryRef": "_Measures.merchant_refund_rate",
+              "nativeQueryRef": "merchant_refund_rate"
             }
           ]
         }
@@ -98,7 +99,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Refund rate by month'"
+                  "Value": "'Merchant-payment refund rate by month'"
                 }
               }
             },

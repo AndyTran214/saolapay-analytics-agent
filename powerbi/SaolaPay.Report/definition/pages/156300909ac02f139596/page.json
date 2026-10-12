@@ -1,7 +1,7 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.0.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
   "name": "156300909ac02f139596",
-  "displayName": "Product mix & Take rate: How do GMV and take rate differ across products and merchant categories?",
+  "displayName": "Product mix & Take rate",
   "displayOption": "FitToPage",
   "height": 720,
   "width": 1280,

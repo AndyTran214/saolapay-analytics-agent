@@ -1,4 +1,5 @@
 table _Measures
+	lineageTag: e2b7ab99-343b-4835-a88d-cd5719298df5
 
 	/// Sum of amount in VND over spending transactions (merchant_payment, bill_payment, mobile_topup)
 	measure gmv =
@@ -9,6 +10,7 @@ table _Measures
 			)
 		formatString: #,0
 		displayFolder: Volume
+		lineageTag: 56425b10-5cbb-409d-a499-70a2311473bb
 
 	/// Sum of amount in VND over all valid transactions incl. topup, withdraw, P2P
 	measure tpv =
@@ -18,6 +20,7 @@ table _Measures
 			)
 		formatString: #,0
 		displayFolder: Volume
+		lineageTag: 85435633-4a64-44eb-a028-f1296f691e71
 
 	/// Number of valid transactions of all types
 	measure txn_count =
@@ -27,6 +30,7 @@ table _Measures
 			)
 		formatString: #,0
 		displayFolder: Volume
+		lineageTag: a0754f83-9b98-4e9f-9bdf-0b5067f6ca8e
 
 	/// Sum of revenue_vnd (MDR, bill and top-up commission, withdraw fees)
 	measure gross_revenue =
@@ -36,6 +40,7 @@ table _Measures
 			)
 		formatString: #,0
 		displayFolder: Revenue
+		lineageTag: 96c13f6d-d6df-4b94-b00d-f2755bda0dce
 
 	/// Sum of discount_vnd (cashback, discounts)
 	measure promo_cost =
@@ -45,18 +50,19 @@ table _Measures
 			)
 		formatString: #,0
 		displayFolder: Revenue
+		lineageTag: 8ea82410-b384-4551-ae6d-3cd75d398e86
 
 	/// gross_revenue - promo_cost (North Star)
-	measure net_revenue =
-			[gross_revenue] - [promo_cost]
+	measure net_revenue = [gross_revenue] - [promo_cost]
 		formatString: #,0
 		displayFolder: Revenue
+		lineageTag: bd53732a-0533-4242-b675-35da2b42d536
 
 	/// gross_revenue / gmv (ratio)
-	measure take_rate =
-			DIVIDE([gross_revenue], [gmv])
+	measure take_rate = DIVIDE([gross_revenue], [gmv])
 		formatString: 0.00%
 		displayFolder: Revenue
+		lineageTag: 8e278993-6306-49f7-9e27-4b4ae4929905
 
 	/// Distinct users with a valid transaction of any type
 	measure active_users =
@@ -66,6 +72,7 @@ table _Measures
 			)
 		formatString: #,0
 		displayFolder: Users
+		lineageTag: f8eb08b8-b0d5-4ae0-b3c7-514981b4f686
 
 	/// Distinct users with a valid spending transaction
 	measure paying_users =
@@ -76,6 +83,7 @@ table _Measures
 			)
 		formatString: #,0
 		displayFolder: Users
+		lineageTag: f1294d0e-ea66-4ba8-8978-4c16a279d496
 
 	/// gmv / count of valid spending transactions
 	measure avg_ticket =
@@ -89,12 +97,13 @@ table _Measures
 			)
 		formatString: #,0
 		displayFolder: Volume
+		lineageTag: 4461b3d6-9d66-4921-a9d8-2526b7b9a2df
 
 	/// net_revenue / active_users in the same slice
-	measure arpu =
-			DIVIDE([net_revenue], [active_users])
+	measure arpu = DIVIDE([net_revenue], [active_users])
 		formatString: #,0
 		displayFolder: Revenue
+		lineageTag: 010f7aab-da08-41e6-96ce-2f2c897ab56e
 
 	/// count(success) / count(success + failed) over non-test users, all txn_types; refunded excluded from the denominator
 	measure payment_success_rate =
@@ -114,6 +123,7 @@ table _Measures
 				DIVIDE(COALESCE(_events, 0), _attempts)
 		formatString: 0.0%
 		displayFolder: Health
+		lineageTag: 426a20da-0f2e-4c76-82b0-99c294c1543b
 
 	/// count(refunded) / count(success + refunded) over non-test users, all txn_types
 	measure refund_rate =
@@ -133,6 +143,7 @@ table _Measures
 				DIVIDE(COALESCE(_events, 0), _attempts)
 		formatString: 0.0%
 		displayFolder: Health
+		lineageTag: bbe99737-db5c-4943-a7a3-cf1f370c0aef
 
 	/// Users who signed up in the period (non-test users)
 	measure new_users =
@@ -143,6 +154,7 @@ table _Measures
 			)
 		formatString: #,0
 		displayFolder: Users
+		lineageTag: fea69c53-7f3c-4fb2-aade-436c1f4c2d5a
 
 	/// Share of new users with a valid spending transaction within 7 days of signup; users with an incomplete 7-day window are excluded from both sides
 	measure activation_rate_7d =
@@ -165,6 +177,7 @@ table _Measures
 				DIVIDE(COALESCE(_act, 0), _base)
 		formatString: 0.0%
 		displayFolder: Engagement
+		lineageTag: fef4aa85-00f9-41da-adab-558ac00d7257
 
 	/// Share of a signup cohort active in month 1 after signup. Numerator: distinct non-test users with a valid transaction in month 1. Denominator: non-test users of the same cohort with months_observable >= 1. Immature cohorts are blank, never 0
 	measure retention_m1 =
@@ -186,6 +199,7 @@ table _Measures
 				DIVIDE(COALESCE(_retained, 0), _cohort_size)
 		formatString: 0.0%
 		displayFolder: Engagement
+		lineageTag: 7847defe-4abf-44bd-8f93-040eb8679088
 
 	/// Share of a signup cohort active in month 3 after signup. Numerator: distinct non-test users with a valid transaction in month 3. Denominator: non-test users of the same cohort with months_observable >= 3. Immature cohorts are blank, never 0
 	measure retention_m3 =
@@ -207,13 +221,144 @@ table _Measures
 				DIVIDE(COALESCE(_retained, 0), _cohort_size)
 		formatString: 0.0%
 		displayFolder: Engagement
+		lineageTag: ac11c87b-0d22-4795-a561-784ed0cf054c
+
+	/// gmv restricted to merchant payments (txn_type = merchant_payment). Only merchant payments carry a merchant category, so this is the base for category shares.
+	measure merchant_gmv = CALCULATE([gmv], fct_transactions[txn_type] = "merchant_payment")
+		formatString: #,0
+		displayFolder: Merchant
+		lineageTag: 4a94e382-4f13-490f-af10-16d60c7215dc
+
+	/// Share of merchant_gmv going to transport merchants: merchant_gmv for merchant_category = transport divided by merchant_gmv.
+	measure transport_share_merchant_gmv =
+			DIVIDE(
+				CALCULATE([merchant_gmv], fct_transactions[merchant_category] = "transport"),
+				[merchant_gmv]
+			)
+		formatString: 0.0%
+		displayFolder: Merchant
+		lineageTag: ffd91f3b-5a64-4bf2-aa12-e7963f2e66fa
+
+	/// take_rate computed excluding transport merchant payments: gross_revenue / gmv with merchant_category <> transport. Non-merchant spending (bills, mobile top-up) is kept.
+	measure take_rate_ex_transport =
+			DIVIDE(
+				CALCULATE([gross_revenue], fct_transactions[merchant_category] <> "transport"),
+				CALCULATE([gmv], fct_transactions[merchant_category] <> "transport")
+			)
+		formatString: 0.00%
+		displayFolder: Revenue
+		lineageTag: 0790945f-b735-4a32-9901-143b6ea4452e
+
+	/// count(failed) / count(success + failed) for merchant payments only, non-test users. Refunded excluded from the denominator.
+	measure merchant_failure_rate =
+			VAR _events =
+				CALCULATE(
+					COUNTROWS(fct_transactions),
+					fct_transactions[txn_type] = "merchant_payment",
+					fct_transactions[status] = "failed",
+					fct_transactions[is_test_user] = FALSE()
+				)
+			VAR _attempts =
+				CALCULATE(
+					COUNTROWS(fct_transactions),
+					fct_transactions[txn_type] = "merchant_payment",
+					fct_transactions[status] IN {"success", "failed"},
+					fct_transactions[is_test_user] = FALSE()
+				)
+			RETURN
+				DIVIDE(COALESCE(_events, 0), _attempts)
+		formatString: 0.0%
+		displayFolder: Health
+		lineageTag: 53b582c0-fd1f-464b-ac5c-bdcf6b9f7046
+
+	/// count(refunded) / count(success + refunded) for merchant payments only, non-test users. Refunds exist only for merchant payments.
+	measure merchant_refund_rate =
+			VAR _events =
+				CALCULATE(
+					COUNTROWS(fct_transactions),
+					fct_transactions[txn_type] = "merchant_payment",
+					fct_transactions[status] = "refunded",
+					fct_transactions[is_test_user] = FALSE()
+				)
+			VAR _attempts =
+				CALCULATE(
+					COUNTROWS(fct_transactions),
+					fct_transactions[txn_type] = "merchant_payment",
+					fct_transactions[status] IN {"success", "refunded"},
+					fct_transactions[is_test_user] = FALSE()
+				)
+			RETURN
+				DIVIDE(COALESCE(_events, 0), _attempts)
+		formatString: 0.0%
+		displayFolder: Health
+		lineageTag: ef46ffea-caf0-43e1-8961-6dcca8f0a6cd
+
+	/// 1 - payment_success_rate: count(failed) / count(success + failed) over non-test users, all txn_types. Blank when there are no attempts.
+	measure failure_rate = IF(ISBLANK([payment_success_rate]), BLANK(), 1 - [payment_success_rate])
+		formatString: 0.0%
+		displayFolder: Health
+		lineageTag: 2454e23a-88b4-4c5d-815d-b638718e1100
+
+	/// Average of active_users across the calendar months in the current filter context (average monthly active users).
+	measure avg_mau = AVERAGEX(VALUES(dim_date[month_start]), [active_users])
+		formatString: #,0
+		displayFolder: Users
+		lineageTag: a8e45ff7-7e8d-49d2-bca7-07b3862926b6
+
+	/// Average of arpu across the calendar months in the current filter context (net_revenue / active_users per month, then averaged).
+	measure avg_monthly_arpu = AVERAGEX(VALUES(dim_date[month_start]), [arpu])
+		formatString: #,0
+		displayFolder: Revenue
+		lineageTag: bb42a5bb-7124-4b6a-acb4-cea7ca667473
+
+	/// Numerator of retention_m3: distinct non-test users with a valid transaction in month 3 after signup, among users with months_observable >= 3.
+	measure retained_users_m3 =
+			CALCULATE(
+				DISTINCTCOUNT(fct_user_monthly_activity[user_id]),
+				fct_user_monthly_activity[months_since_signup] = 3,
+				dim_users[is_test_user] = FALSE(),
+				dim_users[months_observable] >= 3
+			)
+		formatString: #,0
+		displayFolder: Engagement
+		lineageTag: 25d893da-12d9-4826-b218-2046f36f3ea0
+
+	/// Share of a signup cohort active in month 6 after signup. Numerator: distinct non-test users with a valid transaction in month 6. Denominator: non-test users of the same cohort with months_observable >= 6. Immature cohorts are blank, never 0
+	measure retention_m6 =
+			VAR _k = 6
+			VAR _cohort_size =
+				CALCULATE(
+					COUNTROWS(dim_users),
+					dim_users[is_test_user] = FALSE(),
+					dim_users[months_observable] >= _k
+				)
+			VAR _retained =
+				CALCULATE(
+					DISTINCTCOUNT(fct_user_monthly_activity[user_id]),
+					fct_user_monthly_activity[months_since_signup] = _k,
+					dim_users[is_test_user] = FALSE(),
+					dim_users[months_observable] >= _k
+				)
+			RETURN
+				DIVIDE(COALESCE(_retained, 0), _cohort_size)
+		formatString: 0.0%
+		displayFolder: Engagement
+		lineageTag: 5bacd983-8ba7-4a47-9892-39cd0762890e
+
+	/// promo_cost divided by retained_users_m3: VND of promotion cost per user still active in month 3.
+	measure promo_cost_per_m3_retained_user = DIVIDE([promo_cost], [retained_users_m3])
+		formatString: #,0
+		displayFolder: Promotion
+		lineageTag: d5a8733b-bdbe-4b81-bc34-bc4db4cf03c0
 
 	column _
 		dataType: string
 		isHidden
+		lineageTag: d4ca9113-c69d-4491-a71e-eee4f9bfc7bc
 		summarizeBy: none
 		sourceColumn: _
 
 	partition _Measures = m
 		mode: import
 		source = #table(type table [_ = text], {})
+

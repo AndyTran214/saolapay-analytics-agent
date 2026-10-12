@@ -1,79 +1,95 @@
 /// WARNING: this table contains 400 internal TEST users (is_test_user = true), kept only so foreign keys resolve. For ANY user count (new users, activation, retention, cohort size, active users) you MUST filter NOT is_test_user. One row per user. kyc_level is the CURRENT value, not the value at transaction time. Data is right-censored at the data end date (2025-12-31): activation rate = average of is_activated_7d over users with is_activation_window_complete (and NOT is_test_user); retention Mk denominator = non-test users with months_observable >= k (see fct_user_monthly_activity).
 table dim_users
+	lineageTag: 07c9b58b-8085-4f80-a0f6-d35a206287f8
 
 	/// Primary key.
 	column user_id
 		dataType: string
 		isHidden
+		lineageTag: 790a80cf-4b89-4cad-8eb2-1c3398733f54
 		sourceColumn: user_id
 
 	/// Signup date in Vietnam time.
 	column signup_date_vn
 		dataType: dateTime
 		formatString: yyyy-mm-dd
+		lineageTag: 5ed6fbd7-18f9-41b2-8737-2efbea256797
 		sourceColumn: signup_date_vn
+
 		annotation UnderlyingDateTimeDataType = Date
 
 	/// First day of the signup month in Vietnam time; cohort key for retention.
 	column signup_cohort_month
 		dataType: dateTime
 		formatString: mmm yyyy
+		lineageTag: f30092d7-7554-4db6-86c8-6cd955b0378d
 		sourceColumn: signup_cohort_month
+
 		annotation UnderlyingDateTimeDataType = Date
 
 	/// Province / city.
 	column province
 		dataType: string
+		lineageTag: 9f08a219-b8e3-4643-8e7a-bdedbba1cd53
 		sourceColumn: province
 
 	/// Region: Bac / Trung / Nam.
 	column region
 		dataType: string
+		lineageTag: 67dc4099-5c35-41d4-b19c-5bfcb60ffac2
 		sourceColumn: region
 
 	/// Normalised gender M / F / U.
 	column gender
 		dataType: string
+		lineageTag: 7e97d556-b425-4581-93e8-5a5b2834b618
 		sourceColumn: gender
 
 	/// Age at signup year bucketed: <18, 18-24, 25-34, 35-44, 45-54, 55+, unknown when the year of birth is missing.
 	column age_band
 		dataType: string
+		lineageTag: 0481fb16-185b-42e7-ac2f-4f4288d55bf3
 		sourceColumn: age_band
 
 	/// organic / referral / paid_ads / promo_new_user.
 	column acquisition_channel
 		dataType: string
+		lineageTag: 3c2910bc-d721-4621-ae54-39a1a425515c
 		sourceColumn: acquisition_channel
 
 	/// CURRENT KYC level (0 none, 1 phone, 2 ID + bank). Not the level at the time of any transaction.
 	column kyc_level
 		dataType: int64
 		formatString: 0
+		lineageTag: 9c602f07-23c1-4ce7-91dc-3dabc84acabd
 		summarizeBy: none
 		sourceColumn: kyc_level
 
 	/// User's device OS (android / ios) at signup. Use this column for cohort visuals; transaction visuals use fct_transactions[device_os].
 	column device_os
 		dataType: string
+		lineageTag: 72d10812-176e-46be-ba44-14cdb30f3165
 		sourceColumn: device_os
 
 	/// True for the 400 internal test accounts; ALWAYS filter NOT is_test_user for user-level business metrics (new users, activation, retention, cohort size).
 	column is_test_user
 		dataType: boolean
 		isHidden
+		lineageTag: 774b7576-5f1e-4dce-8780-dc1469baa4c8
 		sourceColumn: is_test_user
 
 	/// True if the user has at least one valid spending transaction within 7 days (168 hours) after signup. False for users with none, and for test users. RIGHT-CENSORED: for users with is_activation_window_complete = false a FALSE value is NOT final (the 7-day window is not fully observed), so exclude them from the rate; a TRUE value is always valid. Activation 7d rate = avg(is_activated_7d) over users where NOT is_test_user AND is_activation_window_complete. Never average over all users.
 	column is_activated_7d
 		dataType: boolean
 		isHidden
+		lineageTag: 1982b66f-0c87-4b37-a83d-9f7c1275337f
 		sourceColumn: is_activated_7d
 
 	/// True if signup time (Vietnam time) + 7 days <= end of data_end_date (2025-12-31 inclusive), i.e. the full 7-day activation window was observable. Users who signed up on or after 2025-12-25 are false. Activation 7d rate = avg(is_activated_7d) over users with is_activation_window_complete AND NOT is_test_user.
 	column is_activation_window_complete
 		dataType: boolean
 		isHidden
+		lineageTag: 09270bc4-8562-4053-b302-0d39f67a2730
 		sourceColumn: is_activation_window_complete
 
 	/// Number of full calendar months between signup_cohort_month and the data end month (December 2025): whole calendar months from the signup cohort month to that month. A user who signed up in 2025-09 has 3. Retention Mk denominator = non-test users with months_observable >= k; cohorts with months_observable < k are censored and must be excluded.
@@ -81,8 +97,31 @@ table dim_users
 		dataType: int64
 		isHidden
 		formatString: 0
+		lineageTag: 9fe9d6cd-cdd2-4f9d-9ed7-087dbe540815
 		summarizeBy: none
 		sourceColumn: months_observable
+
+	/// Calculated: 'Bill in first 30 days' if the user has a valid bill_payment with txn_date_vn <= signup_date_vn + 30, otherwise 'No bill in first 30 days'. Test users are 'n/a'.
+	column early_bill_payer =
+			VAR _cutoff = dim_users[signup_date_vn] + 30
+			VAR _bills =
+				COUNTROWS(
+					FILTER(
+						RELATEDTABLE(fct_transactions),
+						fct_transactions[txn_type] = "bill_payment"
+							&& fct_transactions[is_valid] = TRUE()
+							&& fct_transactions[txn_date_vn] <= _cutoff
+					)
+				)
+			RETURN
+				IF(
+					dim_users[is_test_user] = TRUE(),
+					"n/a",
+					IF(_bills > 0, "Bill in first 30 days", "No bill in first 30 days")
+				)
+		dataType: string
+		lineageTag: ebcb3185-d8da-4579-9048-e957faffeac1
+		summarizeBy: none
 
 	partition dim_users = m
 		mode: import
@@ -93,3 +132,4 @@ table dim_users
 					Typed = Table.TransformColumnTypes(Keep, {{"user_id", type text}, {"signup_date_vn", type date}, {"signup_cohort_month", type date}, {"province", type text}, {"region", type text}, {"gender", type text}, {"age_band", type text}, {"acquisition_channel", type text}, {"kyc_level", Int64.Type}, {"device_os", type text}, {"is_test_user", type logical}, {"is_activated_7d", type logical}, {"is_activation_window_complete", type logical}, {"months_observable", Int64.Type}})
 				in
 					Typed
+

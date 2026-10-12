@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "75e048c2c31ff6cf41d3",
   "position": {
-    "x": 650,
+    "x": 660,
     "y": 126,
     "z": 50,
-    "height": 185,
-    "width": 610,
+    "height": 200,
+    "width": 600,
     "tabOrder": 50
   },
   "visual": {
@@ -27,25 +27,8 @@
                 }
               },
               "queryRef": "dim_date.month_start",
-              "nativeQueryRef": "month_start"
-            }
-          ]
-        },
-        "Y": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "gmv"
-                }
-              },
-              "queryRef": "_Measures.gmv",
-              "nativeQueryRef": "gmv"
+              "nativeQueryRef": "month_start",
+              "active": true
             }
           ]
         },
@@ -63,7 +46,26 @@
                 }
               },
               "queryRef": "fct_transactions.merchant_category",
-              "nativeQueryRef": "merchant_category"
+              "nativeQueryRef": "merchant_category",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "merchant_gmv"
+                }
+              },
+              "queryRef": "_Measures.merchant_gmv",
+              "nativeQueryRef": "merchant_gmv"
             }
           ]
         }
@@ -123,7 +125,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'GMV share by merchant category'"
+                  "Value": "'GMV share by merchant category (merchant payments)'"
                 }
               }
             },

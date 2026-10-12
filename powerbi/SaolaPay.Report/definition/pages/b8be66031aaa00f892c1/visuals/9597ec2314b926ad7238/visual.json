@@ -1,19 +1,19 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
-  "name": "fcdf3c0759abdb3e5b30",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "name": "9597ec2314b926ad7238",
   "position": {
-    "x": 440,
+    "x": 400,
     "y": 467,
-    "z": 120,
+    "z": 130,
     "height": 243,
-    "width": 820,
-    "tabOrder": 120
+    "width": 580,
+    "tabOrder": 130
   },
   "visual": {
-    "visualType": "pivotTable",
+    "visualType": "lineChart",
     "query": {
       "queryState": {
-        "Rows": {
+        "Category": {
           "projections": [
             {
               "field": {
@@ -27,29 +27,12 @@
                 }
               },
               "queryRef": "dim_date.week_start",
-              "nativeQueryRef": "week_start"
+              "nativeQueryRef": "week_start",
+              "active": true
             }
           ]
         },
-        "Values": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "payment_success_rate"
-                }
-              },
-              "queryRef": "_Measures.payment_success_rate",
-              "nativeQueryRef": "payment_success_rate"
-            }
-          ]
-        },
-        "Columns": {
+        "Series": {
           "projections": [
             {
               "field": {
@@ -63,11 +46,70 @@
                 }
               },
               "queryRef": "fct_transactions.device_os",
-              "nativeQueryRef": "device_os"
+              "nativeQueryRef": "device_os",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "merchant_failure_rate"
+                }
+              },
+              "queryRef": "_Measures.merchant_failure_rate",
+              "nativeQueryRef": "merchant_failure_rate"
             }
           ]
         }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "dim_date"
+                  }
+                },
+                "Property": "week_start"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ],
+        "isDefaultSort": true
       }
+    },
+    "objects": {
+      "legend": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "position": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Top'"
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     "visualContainerObjects": {
       "title": [
@@ -83,7 +125,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Weekly payment success rate by device OS'"
+                  "Value": "'Weekly merchant-payment failure rate by device OS'"
                 }
               }
             },

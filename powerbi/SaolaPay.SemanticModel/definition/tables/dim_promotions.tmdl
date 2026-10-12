@@ -1,45 +1,55 @@
 /// Promotion dimension (campaign definitions). Actual cost lives in fct_transactions.discount_vnd.
 table dim_promotions
+	lineageTag: f684150c-3967-4cfe-b3a7-508ceb0006f0
 
 	/// Primary key.
 	column promotion_id
 		dataType: string
 		isHidden
+		lineageTag: 2eb780ac-b626-43d5-a2a7-727d0e9e9599
 		sourceColumn: promotion_id
 
 	/// Promotion display name.
 	column promo_name
 		dataType: string
+		lineageTag: fb3a7c29-447a-4ba7-9370-b81e2cf437cc
 		sourceColumn: promo_name
 
 	/// cashback or discount.
 	column promo_type
 		dataType: string
+		lineageTag: 1ccb6fda-6c33-4420-8730-31f0e5db2e91
 		sourceColumn: promo_type
 
 	/// First day of the promotion.
 	column start_date
 		dataType: dateTime
 		formatString: yyyy-mm-dd
+		lineageTag: 2112fc69-d1c4-41da-a09d-a0fdc30dc374
 		sourceColumn: start_date
+
 		annotation UnderlyingDateTimeDataType = Date
 
 	/// Last day of the promotion.
 	column end_date
 		dataType: dateTime
 		formatString: yyyy-mm-dd
+		lineageTag: d8510c69-72c0-4848-ab51-85ad9372642f
 		sourceColumn: end_date
+
 		annotation UnderlyingDateTimeDataType = Date
 
 	/// new_user or all.
 	column target_segment
 		dataType: string
+		lineageTag: f3529936-2fd2-4a3f-b451-8f682b743d65
 		sourceColumn: target_segment
 
 	/// Discount as a fraction of the amount.
 	column discount_pct
 		dataType: double
 		formatString: 0.0%
+		lineageTag: 233011ae-bf11-4e1d-9a7d-7e92b88d1465
 		summarizeBy: none
 		sourceColumn: discount_pct
 
@@ -47,13 +57,15 @@ table dim_promotions
 	column max_discount_vnd
 		dataType: int64
 		formatString: 0
+		lineageTag: 79d81fa7-a6e2-42d6-b0a2-dc3927253d86
 		summarizeBy: none
 		sourceColumn: max_discount_vnd
 
 	/// Total budget in VND.
 	column budget_vnd
 		dataType: int64
-		formatString: 0
+		formatString: #,0
+		lineageTag: d97bb3f5-44ec-44a0-bd9e-d73df2d6144d
 		summarizeBy: none
 		sourceColumn: budget_vnd
 
@@ -66,3 +78,4 @@ table dim_promotions
 					Typed = Table.TransformColumnTypes(Keep, {{"promotion_id", type text}, {"promo_name", type text}, {"promo_type", type text}, {"start_date", type date}, {"end_date", type date}, {"target_segment", type text}, {"discount_pct", type number}, {"max_discount_vnd", Int64.Type}, {"budget_vnd", Int64.Type}})
 				in
 					Typed
+
